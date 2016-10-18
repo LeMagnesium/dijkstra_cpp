@@ -16,6 +16,12 @@ Dijkstra::~Dijkstra() {;}
 
 void Dijkstra::updateAround(uint16_t cursor) {
 	Waypoint * wpt = this->waypointfile->getWaypointPtr(cursor);
+	std::vector<uint16_t> around = wpt->getOutgoingConnectionsIds();
+	for (std::vector<uint16_t>::iterator it = around.begin(); it!=around.end(); it++) {
+		Waypoint * connection = this->waypointfile->getWaypointPtr(*it);
+		//std::cout << wpt->getDistance(*it) << std::endl;
+		this->grid[*it] = wpt->getDistance(*it);
+	}
 }
 
 void Dijkstra::holdTrial(uint16_t one, uint16_t two) {
@@ -43,8 +49,24 @@ trajectory * Dijkstra::solve() {
 	while (true) {
 		// Explore surroundings
 		this->updateAround(selected);
-//		std::cout << this->
 
+		// Select
+		Waypoint * wpt = this->waypointfile->getWaypointPtr(selected);
+		std::vector<uint16_t> around = wpt->getOutgoingConnectionsIds();
+		long min = -1;
+		long newid = -1;
+		for (std::vector<uint16_t>::iterator it = around.begin(); it!=around.end(); it++) {
+			//std::cout << *it << std::endl;
+			//std::cout << this->grid[*it] << std::endl;
+			if (min == -1 || this->grid[*it] < min) {
+				newid = *it;
+				min = this->grid[*it];
+			}
+		}
+		//std::cout << min << std::endl;
+		std::cout << "Getting to " << newid << "..." << std::endl;
+		selected = newid;
+		if (newid == this->waypointfile->getEnd()) {break;}
 	}
 	return new trajectory;
 }

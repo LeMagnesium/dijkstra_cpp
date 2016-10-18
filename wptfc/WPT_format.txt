@@ -1,0 +1,20 @@
+#WPT FORMAT
+u32	"WPTF" # WayPoinT File
+u8	VERSION
+
+u16	waypoints_nbr
+u16	start_id
+u16	end_id
+
+foreach waypoints_nbr
+	u16	id
+	u8	label_len
+	# Label is a unicode string (each character is coded on 16 bits)
+	foreach label_len
+		u16 char
+
+	u8	connections
+	foreach connections
+		u16 id
+		u16 distance
+
