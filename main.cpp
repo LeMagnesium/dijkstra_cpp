@@ -29,6 +29,10 @@ int main(int argc, char * argv[]) {
 	    << "Solving begins..." << std::endl;
   trajectory * tj = dij.solve();
 
+  for (trajectory::iterator it = tj->begin(); it!=tj->end(); it++) {
+  	std::cout << *it << std::endl;
+  }
+
   delete wptf;
   delete tj;
 

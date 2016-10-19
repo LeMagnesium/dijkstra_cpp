@@ -10,7 +10,7 @@ public:
   Dijkstra(WaypointFile*);
   ~Dijkstra();
 
-  void updateAround(uint16_t);
+  void updateAround(uint16_t, trajectory, long);
   void addRoute(trajectory, uint16_t);
   void holdTrial(uint16_t, uint16_t);
 
@@ -20,6 +20,7 @@ private:
   WaypointFile * waypointfile = NULL;
   std::map<uint16_t, uint16_t> grid;
   std::map<trajectory, uint16_t> discoveries;
+  std::vector<uint16_t> exhausted;
 };
 
 #endif
