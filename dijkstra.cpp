@@ -19,7 +19,6 @@ void Dijkstra::updateAround(uint16_t cursor, trajectory current, long curlength)
 	std::vector<uint16_t> around = wpt->getOutgoingConnectionsIds();
 	for (std::vector<uint16_t>::iterator it = around.begin(); it!=around.end(); it++) {
 		Waypoint * connection = this->waypointfile->getWaypointPtr(*it);
-		//std::cout << wpt->getDistance(*it) << std::endl;
 		this->grid[*it] = wpt->getDistance(*it);
 		trajectory attempt(current);
 		attempt.push_back(*it);
@@ -42,9 +41,6 @@ void Dijkstra::loadFromWptFile(WaypointFile * wptf) {
 trajectory * Dijkstra::solve() {
 	// Add starting point as current path
 	uint16_t startpoint = this->waypointfile->getStart();
-	//std::vector<uint16_t> d;
-	//d.push_back(startpoint);
-	//this->addRoute(d, 0);
 
 	uint16_t selected = 0; // Selected path 0
 
@@ -63,8 +59,6 @@ trajectory * Dijkstra::solve() {
 		long newid = -1;
 		bool traject_change = false;
 		for (std::vector<uint16_t>::iterator it = around.begin(); it!=around.end(); it++) {
-			//std::cout << *it << std::endl;
-			//std::cout << this->grid[*it] << std::endl;
 			if (min == -1 || this->grid[*it] < min) {
 				newid = *it;
 				min = this->grid[*it];
@@ -89,18 +83,14 @@ trajectory * Dijkstra::solve() {
 		}
 		//std::cout << min << std::endl;
 		if (!traject_change) {
-			std::cout << "Getting to " << newid << "..." << std::endl;
-			std::cout << length << " + " << min << " = ";
 			length += min;
-			std::cout << length << std::endl;
+			tested.push_back(newid);
 			this->discoveries[tested] = length;
 		} else {
 			// length is changed to the distance from the start to our new point
 			// the new id is set from our new trajectory
 			newid = tested.back();
-			std::cout << "Hopping to " << newid << "..." << std::endl;
 			length = this->discoveries[tested];
-			std::cout << "Distance from origin : " << length << std::endl;
 		}
 		this->exhausted.push_back(selected);
 		selected = newid;
@@ -117,8 +107,14 @@ trajectory * Dijkstra::solve() {
 			}
 		}
 
-		if (newid == this->waypointfile->getEnd() || this->exhausted.size() == this->waypointfile->getWptIds().size()) {break;}
+		if (selected == this->waypointfile->getEnd() || this->exhausted.size() == this->waypointfile->getWptIds().size()) {break;}
 	}
-	std::cout << "It will take at least " << length << std::endl;
-	return new trajectory;
+	
+	// Now, the aftermath
+	if (this->exhausted.size() == this->waypointfile->getWptIds().size()) {
+		// There is no exit
+		return new trajectory();
+	} else {
+		return new trajectory(tested);
+	}
 }
