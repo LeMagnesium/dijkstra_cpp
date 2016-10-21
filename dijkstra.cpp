@@ -12,7 +12,9 @@ Dijkstra::Dijkstra(WaypointFile * wptf) {
   this->loadFromWptFile(wptf);
 }
 
-Dijkstra::~Dijkstra() {;}
+Dijkstra::~Dijkstra() {
+	delete this->waypointfile;
+}
 
 void Dijkstra::updateAround(uint16_t cursor, trajectory current, long curlength) {
 	Waypoint * wpt = this->waypointfile->getWaypointPtr(cursor);
@@ -55,6 +57,7 @@ trajectory * Dijkstra::solve() {
 		// Select
 		Waypoint * wpt = this->waypointfile->getWaypointPtr(selected);
 		std::vector<uint16_t> around = wpt->getOutgoingConnectionsIds();
+
 		long min = -1;
 		long newid = -1;
 		bool traject_change = false;

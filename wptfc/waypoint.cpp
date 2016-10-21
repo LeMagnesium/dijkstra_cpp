@@ -13,7 +13,7 @@
 
 // Some utils
 bool assertWptId(std::string id) {
-  for (uint8_t o; o < id.size(); o++) {
+  for (uint8_t o = 0; o < id.size(); o++) {
     if (!isdigit(id[o])) {
       return false;
     }
@@ -32,8 +32,6 @@ Waypoint::Waypoint(uint16_t id, std::string label) {
   this->id = id;
   this->label = label;
 }
-
-Waypoint::~Waypoint() {;}
 
 bool Waypoint::setDistance(uint16_t dest, uint16_t len) {
   this->distances[dest] = len;
@@ -221,7 +219,7 @@ bool WaypointFile::readFromSource(std::ifstream * ifs) {
       }
       
       this->setEnd(stoul(id));
- 
+
     } else if (strcmp(cmd.c_str(), "waypoint") == 0) {
       std::string params = line.substr(9);
       if (params.find("\t") > 65535) {

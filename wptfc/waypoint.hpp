@@ -14,7 +14,6 @@ class Waypoint {
 public:
   Waypoint();
   Waypoint(uint16_t id, std::string label);
-  ~Waypoint();
 
   bool setDistance(uint16_t dest, uint16_t len);
   uint16_t getDistance(uint16_t dest);

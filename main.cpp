@@ -44,7 +44,6 @@ int main(int argc, char * argv[]) {
 	}
 	std::cout << std::endl;
 
-	delete wptf;
 	delete tj;
 
 	return 0;
