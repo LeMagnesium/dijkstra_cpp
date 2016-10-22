@@ -1,18 +1,22 @@
 #ifndef DIJKSTRA_HPP
 #define DIJKSTRA_HPP "loaded"
 
+/*\
+ * 	C++ Implementation of Dijkstra's Algorithm
+ * 	ßÿ Lymkwi/LeMagnesium
+ * 	License : WTFPL
+ * 	Last modification : 22/10/2016
+ *
+\*/
 
 #include "wptfc/waypoint.hpp"
 
 class Dijkstra {
 public:
-  //  Dijkstra();
   Dijkstra(WaypointFile*);
   ~Dijkstra();
 
-  void updateAround(uint16_t, trajectory, long);
   void addRoute(trajectory, uint16_t);
-  void holdTrial(uint16_t, uint16_t);
 
   void loadFromWptFile(WaypointFile*);
   trajectory * solve();
