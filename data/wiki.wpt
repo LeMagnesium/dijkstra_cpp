@@ -1,0 +1,26 @@
+waypoint	0	"A"
+waypoint	1	"B"
+waypoint	2	"C"
+waypoint	3	"D"
+waypoint	4	"E"
+waypoint	5	"F"
+waypoint	6	"G"
+waypoint	7	"H"
+waypoint	8	"I"
+waypoint	9	"J"
+
+start	0
+end	9
+
+distance	0	1	85
+distance	0	2	217
+distance	0	4	173
+distance	1	5	80
+distance	2	6	186
+distance	2	7	103
+distance	4	9	502
+distance	5	8	250
+distance	7	9	167
+distance	8	9	84
+
+
