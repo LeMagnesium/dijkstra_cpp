@@ -12,6 +12,7 @@
 #include <cstring>
 
 // Some utils
+// Assert whether or not id is convertible to a WPtId
 bool assertWptId(std::string id) {
   for (uint8_t o = 0; o < id.size(); o++) {
     if (!isdigit(id[o])) {
@@ -22,17 +23,20 @@ bool assertWptId(std::string id) {
 }
 
 // Waypoint
+// Empty Waypoint
 Waypoint::Waypoint() {
   this->id = 0;
   this->label = std::string("");
   this->distances = std::map<uint16_t, uint16_t>();
 }
 
+// Documented Waypoint
 Waypoint::Waypoint(uint16_t id, std::string label) {
   this->id = id;
   this->label = label;
 }
 
+// Distance between two waypoints (coded on 16 bytes)
 bool Waypoint::setDistance(uint16_t dest, uint16_t len) {
   this->distances[dest] = len;
   return true;
@@ -50,6 +54,8 @@ const std::string Waypoint::getLabel() {
   return this->label;
 }
 
+// Return an array of 16-bytes integers which all receive connections from
+// the waypoint which Id is provided
 std::vector<uint16_t> Waypoint::getOutgoingConnectionsIds() {
   std::vector<uint16_t> ret;
   for (std::map<uint16_t, uint16_t>::iterator it=this->distances.begin(); it!=this->distances.end(); it++) {
@@ -59,10 +65,12 @@ std::vector<uint16_t> Waypoint::getOutgoingConnectionsIds() {
   return ret;
 }
 
+// Could also work with mywpt.getOutgoingConnectionsIds().size()
 size_t Waypoint::getOutgoingConnectionsCount() {
   return this->distances.size();
 }
 
+// Blob data composer
 void Waypoint::writeBlobData(std::ofstream * blob) {
   // u16 id
   writeU16(blob, this->id);
@@ -88,6 +96,7 @@ void Waypoint::writeBlobData(std::ofstream * blob) {
 }
 
 // WaypointFile
+// This represents a waypointfile, not a compressed blob
 WaypointFile::WaypointFile() {
   this->start = 0; this->startset = false;
   this->end = 0; this->endset = false;
@@ -95,6 +104,7 @@ WaypointFile::WaypointFile() {
 
 WaypointFile::~WaypointFile() {;}
 
+// The WayPoint needs a beginning
 bool WaypointFile::setStart(uint16_t id) {
   this->start = id;
   this->startset = true;
@@ -176,6 +186,23 @@ void WaypointFile::writeBlob(std::ofstream * blob) {
   // foreach waypoint_nbr
   for (std::map<uint16_t, Waypoint>::iterator it=this->wpts.begin(); it!=this->wpts.end(); it++)
     it->second.writeBlobData(blob);
+}
+
+bool WaypointFile::isWaypointFileReady() {
+	if (!this->endset) {
+		std::cerr << "ERROR: No end waypoint set (missing 'END' line)" << std::endl;
+		return false;
+	} else if (!this->startset) {
+		std::cerr << "ERROR: No start waypoint set (missing 'START' line)" << std::endl;
+		return false;
+	} else if (this->wpts.count(this->end) == 0) {
+		std::cerr << "ERROR: Defined end waypoint is not declared : " << this->end << std::endl;
+		return false;
+	} else if (this->wpts.count(this->start) == 0) {
+		std::cerr << "ERROR: Defined start waypoint is not declared : " << this->start << std::endl;
+		return false;
+	}
+	return true;
 }
 
 bool WaypointFile::readFromSource(std::ifstream * ifs) {

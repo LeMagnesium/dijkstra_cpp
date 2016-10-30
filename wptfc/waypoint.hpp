@@ -55,6 +55,7 @@ public:
   std::vector<uint16_t> getWptIds();
 
   void writeBlob(std::ofstream * of);
+  bool isWaypointFileReady();
   bool readFromSource(std::ifstream * ifs);
 
 private:

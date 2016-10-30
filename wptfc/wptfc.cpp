@@ -13,12 +13,14 @@
 #include <waypoint.hpp>
 #include <binutils.hpp>
 
+// Main Function
 int main(int argc, char * argv[]) {
   if (argc == 1) {
     std::cout << "No file provided" << std::endl;
     return 0;
   }
 
+  // This std::ifstream is the file input
   std::ifstream ifs;
   ifs.open(argv[1], std::ifstream::in);
   if (!ifs.good()) {
@@ -27,6 +29,7 @@ int main(int argc, char * argv[]) {
     return 1;
   }
 
+  // We declare on the heap, because the data might grow gigantic
   WaypointFile * wptf = new WaypointFile();
     
   if (wptf->readFromSource(&ifs)) {
@@ -38,16 +41,18 @@ int main(int argc, char * argv[]) {
     return 0;
   }
 
-  
-  // HERE PUT ALL THE ASSERTS
+  if (!wptf->isWaypointFileReady()) {
+  	std::cerr << "Compilation failed \u2717" << std::endl;
+	return 1;
+  }
 
-  
   // Compilation over, now producting the blob
   std::string outname(argv[1]);
-  outname += 'c'; // compiled
+  outname += 'c'; // compiled wptC file
 
   std::ofstream blob;
   blob.open(outname.c_str(), std::ofstream::binary | std::ofstream::out | std::ofstream::trunc);
+  // Write the binary blob to our .wptc file
   wptf->writeBlob(&blob);
   delete wptf;
 
